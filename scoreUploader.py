@@ -34,9 +34,10 @@ IS_DEV_MODE = CONFIG[ "IS_DEV_MODE" ]
 FILE_OUT_AT = CONFIG[ "FILE_OUT_AT" ] #"FILE_OUT_AT": "./contestants/",
 LOG_FOLDER_AT = FILE_OUT_AT + CONFIG[ "LOG_FOLDER_AT" ] #"LOG_FOLDER_AT": "Logs/",
 
-
+isFirstRun = True
 
 def main(credentialsFile, tokenFile):
+    global isFirstRun
     print("Using", credentialsFile)
     creds = None
     # The file token.pickle stores the user's access and refresh tokens, and is
@@ -76,7 +77,8 @@ def main(credentialsFile, tokenFile):
         body=body
     ).execute()
 
-    if(CONFIG["NEED_UPDATE_SHEET"]):
+    if(CONFIG["NEED_UPDATE_SHEET"] and isFirstRun):
+        isFirstRun = False
         RANGE_NAME = CONFIG["SHEET_UPDATE_NAME"]+"!A1:A100"
         body = {'values': [["New Submission"]]+[["NO UPDATE"]]*99}
         sheet.values().update(
