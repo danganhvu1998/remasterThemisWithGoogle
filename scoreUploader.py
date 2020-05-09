@@ -76,6 +76,17 @@ def main(credentialsFile, tokenFile):
         body=body
     ).execute()
 
+    if(CONFIG["NEED_UPDATE_SHEET"]):
+        RANGE_NAME = CONFIG["SHEET_UPDATE_NAME"]+"!A1:A100"
+        body = {'values': [["New Submission"]]+[["NO UPDATE"]]*99}
+        sheet.values().update(
+            spreadsheetId=SHEET_OUTPUT_ID,
+            range=RANGE_NAME,
+            valueInputOption="RAW", 
+            body=body
+        ).execute()
+
+
     for i in range(5):
         try:
             paths = sorted(Path("./contestants/Logs/").iterdir(), key=os.path.getmtime)

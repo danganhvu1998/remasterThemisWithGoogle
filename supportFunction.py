@@ -146,6 +146,25 @@ def updatePenalty(sheet, RANGE_NAME, score, submitTime):
   ).execute()
   print("          RANGE_NAME: {} - Score: {} - Penalty: {}".format(RANGE_NAME, score, currPenalty))
 
+def updateStatus(sheet, newStatus):
+  # GET VALUE
+  SHEET_OUTPUT_ID = Config.infomationTaker("SHEET_OUTPUT_ID")
+  SHEET_UPDATE_NAME = Config.infomationTaker("SHEET_UPDATE_NAME")
+  RANGE_NAME = SHEET_UPDATE_NAME+"!A2:A99"
+  result = sheet.values().get(spreadsheetId=SHEET_OUTPUT_ID, range=RANGE_NAME).execute()
+  values = result.get('values', [])
+  values = [[newStatus]] + values
+
+  # RE-WRITE
+  RANGE_NAME = SHEET_UPDATE_NAME+"!A2:A100"
+  body = {'values': values}
+  sheet.values().update(
+      spreadsheetId=SHEET_OUTPUT_ID,
+      range=RANGE_NAME,
+      valueInputOption="RAW", 
+      body=body
+  ).execute()
+
 def updateScore(sheet, student, problem, score, submitTime):
   if( Config.infomationTaker("IS_DEV_MODE") ):
     student = "{}_{}".format(student, randint(1, 10))
@@ -153,7 +172,8 @@ def updateScore(sheet, student, problem, score, submitTime):
     score = score+randint(1, 10)
   # Log to file
   f= open("contest_log.txt","a")
-  f.write("Name: {}, Problems: {}, Score: {}, Time Stamp: {}\n".format(student, problem, score, submitTime))
+  newSubmitStatus =  "Name: {}, Problems: {}, Score: {}, Time Stamp: {}\n".format(student, problem, score, submitTime)
+  f.write(newSubmitStatus)
   f.close()
   SHEET_OUTPUT_ID = Config.infomationTaker("SHEET_OUTPUT_ID")
   CONTEST_MODE = Config.infomationTaker("CONTEST_MODE")
@@ -184,4 +204,5 @@ def updateScore(sheet, student, problem, score, submitTime):
   if isUpdatePenaltyNeeded:
     RANGE_NAME_PENALTY = getRangeName(sheet, student, "PENALTY")
     updatePenalty(sheet, RANGE_NAME_PENALTY, score, submitTime)
+  updateStatus(sheet, newSubmitStatus)
   print("          {} - {} - {}, score is {} at timestamp {}".format(student, problem, RANGE_NAME, score, submitTime))
