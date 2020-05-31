@@ -8,6 +8,7 @@ import configReader as Config
 import os
 from random import randint
 import time
+from pathlib import Path
 
 def getRow(sheet, row):
   SHEET_INPUT_ID = Config.infomationTaker("SHEET_INPUT_ID")
@@ -165,14 +166,14 @@ def updateStatus(sheet, newStatus):
       body=body
   ).execute()
 
-def updateScore(sheet, student, problem, score, submitTime):
+def updateScore(sheet, student, problem, score, submitTime, inQueue = 0):
   if( Config.infomationTaker("IS_DEV_MODE") ):
     student = "{}_{}".format(student, randint(1, 10))
     problem = "{}_{}".format(problem, randint(1, 10))
     score = score+randint(1, 10)
   # Log to file
   f= open("contest_log.txt","a")
-  newSubmitStatus =  "Name: {}, Problems: {}, Score: {}, Time Stamp: {}\n".format(student, problem, score, submitTime)
+  newSubmitStatus =  "Name: {}, Problems: {}, Score: {}, Time Stamp: {}, In Queue: {}\n".format(student, problem, score, submitTime, inQueue)
   f.write(newSubmitStatus)
   f.close()
   SHEET_OUTPUT_ID = Config.infomationTaker("SHEET_OUTPUT_ID")
@@ -206,3 +207,13 @@ def updateScore(sheet, student, problem, score, submitTime):
     updatePenalty(sheet, RANGE_NAME_PENALTY, score, submitTime)
   updateStatus(sheet, newSubmitStatus)
   print("          {} - {} - {}, score is {} at timestamp {}".format(student, problem, RANGE_NAME, score, submitTime))
+
+def countInQueue(dirPath = "./contestants/Logs/"):
+  try:
+    paths = sorted(Path(dirPath).iterdir(), key=os.path.getmtime)
+    res = 0
+    for path in paths:
+      if (path.endswith(".log")): res = res+1
+    return res
+  except:
+    return 0

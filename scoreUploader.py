@@ -93,13 +93,13 @@ def main(credentialsFile, tokenFile):
         try:
             paths = sorted(Path("./contestants/Logs/").iterdir(), key=os.path.getmtime)
         except:
-            time.sleep(10)
+            time.sleep(5)
             continue
         for path in paths:
             path = str(path)
             if not path.endswith(".log"): continue
             print("     Loading", path)
-            fp = open(path, "r", encoding="utf8");
+            fp = open(path, "r", encoding="utf8")
             firstLine = fp.readline().strip()
             fp.close()
             if(IS_DEV_MODE): 
@@ -115,7 +115,7 @@ def main(credentialsFile, tokenFile):
                     score = float(info[2])
                 except:
                     score = 0
-                SFunc.updateScore(sheet, studentName, problemCode, score, submitTime)
+                SFunc.updateScore(sheet, studentName, problemCode, score, submitTime, SFunc.countInQueue())
                 print("     Done Loading", path)
             except:
                 print("     Error when loading {}. Drop".format(path))
