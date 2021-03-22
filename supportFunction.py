@@ -10,6 +10,17 @@ from random import randint
 import time
 from pathlib import Path
 
+# writeCol = chr(writeCol-1+ord('A'))
+def colNumToColString(colNum):
+  # 1  -> A
+  # 26 -> Z
+  # 27 -> AA
+  res = ''
+  while colNum > 0:
+    res = chr((colNum-1)%26+ord('A')) + res
+    colNum = int (colNum/26)
+  return res
+
 def getRow(sheet, row):
   SHEET_INPUT_ID = Config.infomationTaker("SHEET_INPUT_ID")
   SHEET_INPUT_NAME = Config.infomationTaker("SHEET_INPUT_NAME")
@@ -106,7 +117,7 @@ def getRangeName(sheet, student, problem):
     writeCol+=1
   if found==0:
     writeCol = len( values[0] ) + 1
-  writeCol = chr(writeCol-1+ord('A'))
+  writeCol = colNumToColString(writeCol)
   # REWRITE
   if found == 0:
     body = {
