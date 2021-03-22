@@ -9,6 +9,7 @@ import os
 from random import randint
 import time
 from pathlib import Path
+from datetime import datetime
 
 # writeCol = chr(writeCol-1+ord('A'))
 def colNumToColString(colNum):
@@ -184,7 +185,7 @@ def updateScore(sheet, student, problem, score, submitTime, inQueue = 0):
     score = score+randint(1, 10)
   # Log to file
   f= open("contest_log.txt","a")
-  newSubmitStatus =  "Name: {}, Problems: {}, Score: {}, Time Stamp: {}, In Queue: {}\n".format(student, problem, score, submitTime, inQueue)
+  newSubmitStatus =  "Name: {}, Problems: {}, Score: {}, Time: {}, In Queue: {}\n".format(student, problem, score, datetime.fromtimestamp(submitTime), inQueue)
   f.write(newSubmitStatus)
   f.close()
   SHEET_OUTPUT_ID = Config.infomationTaker("SHEET_OUTPUT_ID")
