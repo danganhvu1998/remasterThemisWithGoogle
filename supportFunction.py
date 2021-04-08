@@ -10,6 +10,7 @@ from random import randint
 import time
 from pathlib import Path
 from datetime import datetime
+import re
 
 # writeCol = chr(writeCol-1+ord('A'))
 def colNumToColString(colNum):
@@ -221,11 +222,19 @@ def updateScore(sheet, student, problem, score, submitTime, inQueue = 0):
   print("          {} - {} - {}, score is {} at timestamp {}".format(student, problem, RANGE_NAME, score, submitTime))
 
 def countInQueue(dirPath = "./contestants/Logs/"):
+  resLogs = 0
   try:
     paths = sorted(Path(dirPath).iterdir(), key=os.path.getmtime)
-    res = 0
     for path in paths:
-      if (path.endswith(".log")): res = res+1
-    return res
+      if (path.endswith(".log")): resLogs = resLogs+1
   except:
-    return 0
+    resLogs = 0
+  resCpps = 0
+  try:
+    dirPath = re.findall(r'(.+)Logs')[0]
+    paths = sorted(Path(dirPath).iterdir(), key=os.path.getmtime)
+    for path in paths:
+      if (path.endswith(".cpp")): resCpps = resCpps+1
+  except:
+    resCpps = 0
+  return resCpps + resLogs
