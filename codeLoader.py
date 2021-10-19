@@ -19,6 +19,7 @@ CONFIG = DATA[ "config" ]
 
 # UPDATE SUBMISSION
 start_row = CONFIG[ "START_READING_ROW" ]
+get_curr_row_data_try_count = 0
 SECRET_CODE_COL = CONFIG[ "SECRET_CODE_COL" ]
 PROBLEM_CODE_COL = CONFIG[ "PROBLEM_CODE_COL" ]
 CODE_COL = CONFIG[ "CODE_COL" ]
@@ -31,7 +32,7 @@ SHEET_INPUT_ID = CONFIG[ 'SHEET_INPUT_ID' ]
 SHEET_OUTPUT_ID = CONFIG[ 'SHEET_OUTPUT_ID' ]
 
 def main(credentialsFile, tokenFile):
-    global start_row
+    global start_row, get_curr_row_data_try_count
     print("Using", credentialsFile)
     creds = None
     # The file token.pickle stores the user's access and refresh tokens, and is
@@ -61,6 +62,12 @@ def main(credentialsFile, tokenFile):
 
     currRow = start_row
     for i in range(10):
+        # get_curr_row_data_try_count = get_curr_row_data_try_count + 1
+        # if get_curr_row_data_try_count == 5:
+        #     print("     Failed 5 times. Skip Row:", currRow)
+        #     currRow+=1
+        #     start_row = currRow
+        #     continue 
         print("     Checking Row:", currRow, "at", str(datetime.now()))
         try:
             rowValues = SFunc.getRow(sheet, currRow)[0]
